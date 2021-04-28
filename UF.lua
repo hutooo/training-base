@@ -1,0 +1,80 @@
+UF = {cnt=0, ids = {}}
+UF.__index = UF
+
+function UF:new()
+    local t ={}
+    setmetatable(t, UF)
+    t.cnt = 0
+    t.ids = {}
+    return t
+end
+
+function UF:init(n)
+    self.cnt = n
+    for i = 1, n do
+        self.ids[i] = i
+    end
+end
+
+function UF:count()
+    return self.cnt
+end
+
+function UF:connected(p, q)
+    return self:find(p) == self:find(q)
+end
+
+--[[ impl-1
+    quick-find
+]]
+function UF:find(p)
+    return self.ids[p]
+end
+
+function UF:union(p, q)
+    -- 将 p, q 归并到相同的分量中
+    local pID = self:find(p)
+    local qID = self:find(q)
+
+    -- 如果 p 和 q 已经在相同的分量之中，就不需要做啥
+    if pID == qID then
+        return
+    end
+
+    -- 将p的分量，重命名为 q的名称
+    for i = 1, #self.ids do
+        if pID == self.ids[i] then
+            qID = self.ids[i]
+        end
+    end
+    self.cnt = self.cnt - 1
+end
+
+
+local function test()
+    local N = 10  -- 读取触点数量
+    local uf = UF:new()
+    uf:init(N)
+
+    local pSet = {4,3,6,9,2,5,7,6}
+    local qSet = {3,8,5,4,1,0,2,1}
+
+    -- for index, value in ipairs(p) do
+    --    print(index .. " -- " .. value)
+    -- end
+
+    for i = 1, #pSet, 1 do
+        if uf:connected(pSet[i], qSet[i]) then
+            -- 如果已经联通 则忽略
+            goto continue
+        else
+            uf:union(pSet[i], qSet[i]) -- 归并分量
+            print(pSet[i] .. " --- " .. qSet[i])
+        end
+    end
+    print(uf:count() .. " components")
+    ::continue::
+end
+
+
+test()
