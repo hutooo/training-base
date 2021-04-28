@@ -67,13 +67,12 @@ local function test()
         if uf:connected(pSet[i], qSet[i]) then
             -- 如果已经联通 则忽略
             goto continue
-        else
-            uf:union(pSet[i], qSet[i]) -- 归并分量
-            print(pSet[i] .. " --- " .. qSet[i])
         end
+        uf:union(pSet[i], qSet[i]) -- 归并分量
+        print(pSet[i] .. " --- " .. qSet[i])
+        ::continue::
     end
     print(uf:count() .. " components")
-    ::continue::
 end
 
 
