@@ -24,44 +24,37 @@ function UF:connected(p, q)
     return self:find(p) == self:find(q)
 end
 
---[[ impl-1
-    quick-find
+--[[ impl-2
+    quick-union
 ]]
 function UF:find(p)
-    return self.ids[p]
+    -- 找出分量的名称
+    -- p != id[p]
+    while p ~= self.ids[p]  do
+        p = self.ids[p]
+    end
+    return p
 end
 
 function UF:union(p, q)
-    -- 将 p, q 归并到相同的分量中
-    local pID = self:find(p)
-    local qID = self:find(q)
+    -- 将 p 和 q 的根节点统一
+    local pRoot = self:find(p)
+    local qRoot = self:find(q)
 
-    -- 如果 p 和 q 已经在相同的分量之中，就不需要做啥
-    if pID == qID then
+    if pRoot == qRoot then
         return
     end
-
-    -- 将p的分量，重命名为 q的名称
-    for i = 1, #self.ids do
-        if pID == self.ids[i] then
-            qID = self.ids[i]
-        end
-    end
+    self.ids[pRoot] = qRoot
     self.cnt = self.cnt - 1
 end
-
 
 local function test()
     local N = 10  -- 读取触点数量
     local uf = UF:new()
     uf:init(N)
 
-    local pSet = {4,3,6,9,2,5,7,6}
-    local qSet = {3,8,5,4,1,0,2,1}
-
-    -- for index, value in ipairs(p) do
-    --    print(index .. " -- " .. value)
-    -- end
+    local pSet = {5,4,7,10,3,6,8,7}
+    local qSet = {4,9,6,5,2,1,3,2}
 
     for i = 1, #pSet, 1 do
         if uf:connected(pSet[i], qSet[i]) then
@@ -74,6 +67,4 @@ local function test()
     end
     print(uf:count() .. " components")
 end
-
-
 test()
