@@ -43,6 +43,10 @@ function UF:union(p, q)
     local i = self:find(p)
     local j = self:find(q)
 
+    if i == j then
+        return
+    end
+
     -- 将小树的根节点连接到大树的根节点
     if self.sz[i] < self.sz[j] then
         self.ids[i] = j
